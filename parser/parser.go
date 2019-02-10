@@ -50,7 +50,7 @@ func (p *parser) expect(typ token.Type) bool {
 		curr = p.toks[p.pos-1]
 	}
 	if curr.Type != typ {
-		p.err = fmt.Errorf("[%s] expected %s", curr.Source.String(), typ.String())
+		p.err = fmt.Errorf("[%s] expected %s, got %s", curr.Source.String(), typ.String(), curr.Type.String())
 		return false
 	}
 	p.pos++
@@ -120,9 +120,36 @@ func (p *parser) statement() ast.Statement {
 }
 
 // expression
-// | summation
+// | equality
 func (p *parser) expression() ast.Expression {
-	return p.comparison()
+	return p.equality()
+}
+
+// equality
+// | comparison '=' comparison
+// | comparison
+func (p *parser) equality() ast.Expression {
+	left := p.comparison()
+	if left == nil {
+		return nil
+	}
+	for !p.empty() {
+		curr := p.curr()
+		if curr.Type != token.TokEquals {
+			break
+		}
+		p.expect(token.TokEquals)
+		right := p.comparison()
+		if right == nil {
+			return nil
+		}
+		left = &ast.BinaryOperator{
+			Type:  ast.BinaryEquals,
+			Left:  left,
+			Right: right,
+		}
+	}
+	return left
 }
 
 // comparison
@@ -133,6 +160,8 @@ func (p *parser) comparison() ast.Expression {
 	left := p.summation()
 	if left == nil {
 		return nil
+	} else if p.empty() {
+		return left
 	}
 	curr := p.curr()
 	switch curr.Type {
@@ -171,7 +200,6 @@ func (p *parser) summation() ast.Expression {
 	if prod == nil {
 		return nil
 	}
-
 loop:
 	for !p.empty() {
 		curr := p.curr()
@@ -202,7 +230,6 @@ loop:
 			break loop
 		}
 	}
-
 	return prod
 }
 
@@ -215,7 +242,6 @@ func (p *parser) product() ast.Expression {
 	if term == nil {
 		return nil
 	}
-
 loop:
 	for !p.empty() {
 		curr := p.curr()
@@ -246,7 +272,6 @@ loop:
 			break loop
 		}
 	}
-
 	return term
 }
 
@@ -258,7 +283,6 @@ func (p *parser) terminal() ast.Expression {
 	if p.unexpectedEnd() {
 		return nil
 	}
-
 	curr := p.curr()
 	switch curr.Type {
 	case token.TokInteger:
@@ -286,7 +310,6 @@ func (p *parser) terminal() ast.Expression {
 		}
 		return expr
 	}
-
 	p.err = fmt.Errorf("[%s] unexpected %s", curr.Source.String(), curr.String())
 	return nil
 }
