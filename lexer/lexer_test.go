@@ -19,7 +19,7 @@ func TestIntegerLex(t *testing.T) {
 }
 
 func TestIdentifierLex(t *testing.T) {
-	in := "abc def g hi if while else"
+	in := "abc def g hi if while else var"
 	out := []*token.Token{
 		tok(token.TokIdentifier, "abc"),
 		tok(token.TokIdentifier, "def"),
@@ -28,6 +28,7 @@ func TestIdentifierLex(t *testing.T) {
 		tok(token.TokIf, "if"),
 		tok(token.TokWhile, "while"),
 		tok(token.TokElse, "else"),
+		tok(token.TokVar, "var"),
 	}
 	runTests(in, out, t)
 }
