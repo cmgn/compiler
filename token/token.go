@@ -26,6 +26,7 @@ const (
 	TokLeftCurly    // '{'
 	TokRightCurly   // '}'
 	TokSemiColon    // ';'
+	TokVar          // 'var'
 )
 
 // SourceInformation holds the source information for a token.
@@ -67,6 +68,7 @@ var ConstantTokens = map[Type]string{
 	TokIf:           "if",
 	TokElse:         "else",
 	TokWhile:        "while",
+	TokVar:          "var",
 	TokLeftBracket:  "(",
 	TokRightBracket: ")",
 	TokLeftCurly:    "{",
@@ -79,4 +81,5 @@ var Keywords = map[string]Type{
 	"if":    TokIf,
 	"while": TokWhile,
 	"else":  TokElse,
+	"var":   TokVar,
 }
