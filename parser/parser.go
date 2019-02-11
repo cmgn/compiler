@@ -4,6 +4,7 @@ package parser
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/cmgn/compiler/ast"
 	"github.com/cmgn/compiler/token"
@@ -48,13 +49,17 @@ func (p *parser) expect(typ token.Type) bool {
 	curr := p.curr()
 	if curr == nil {
 		curr = p.toks[p.pos-1]
-	}
-	if curr.Type != typ {
+		p.err = fmt.Errorf("[%s] unexpected end of input, expected %s", curr.Source.String(), typ.String())
+	} else if curr.Type != typ {
 		p.err = fmt.Errorf("[%s] expected %s, got %s", curr.Source.String(), typ.String(), curr.Type.String())
 		return false
 	}
 	p.pos++
 	return true
+}
+
+func (p *parser) unexpected(curr *token.Token) {
+	p.err = fmt.Errorf("[%s] unexpected %s", curr.Source.String(), curr.String())
 }
 
 func (p *parser) unexpectedEnd() bool {
@@ -87,6 +92,24 @@ func (p *parser) statement() ast.Statement {
 	case token.TokSemiColon:
 		p.pos++
 		return &ast.Empty{Source: curr.Source}
+	case token.TokVar:
+		p.pos++
+		name := p.curr()
+		if !p.expect(token.TokIdentifier) {
+			return nil
+		}
+		typ := p.typedecl()
+		if typ == nil {
+			return nil
+		}
+		if !p.expect(token.TokSemiColon) {
+			return nil
+		}
+		return &ast.Declaration{
+			Source: curr.Source,
+			Name:   name.Value,
+			Type:   typ,
+		}
 	}
 
 	expr := p.expression()
@@ -116,6 +139,72 @@ func (p *parser) statement() ast.Statement {
 			Expression: expr,
 		}
 	}
+	return nil
+}
+
+// typedecl
+// | 'int'
+// | 'char'
+// | 'array' '(' integer ')' 'of' typedecl
+func (p *parser) typedecl() ast.Type {
+	if p.unexpectedEnd() {
+		return nil
+	}
+	curr := p.curr()
+	switch curr.Type {
+	case token.TokInt:
+		p.expect(token.TokInt)
+		return &ast.Primitive{
+			Type:   ast.IntType,
+			Source: curr.Source,
+		}
+	case token.TokChar:
+		p.expect(token.TokChar)
+		return &ast.Primitive{
+			Type:   ast.CharType,
+			Source: curr.Source,
+		}
+	case token.TokArray:
+		p.expect(token.TokArray)
+		if !p.expect(token.TokLeftBracket) {
+			return nil
+		}
+		size := p.curr()
+		if !p.expect(token.TokInteger) {
+			return nil
+		}
+		if !p.expect(token.TokRightBracket) {
+			return nil
+		}
+		if !p.expect(token.TokOf) {
+			return nil
+		}
+		typ := p.typedecl()
+		if typ == nil {
+			return nil
+		}
+		// TOOD: handle this error, not sure what the message should say yet.
+		sizeInt, _ := strconv.Atoi(size.Value)
+		return &ast.ArrayType{
+			Type:   typ,
+			Size:   sizeInt,
+			Source: curr.Source,
+		}
+	case token.TokPtr:
+		p.expect(token.TokPtr)
+		if !p.expect(token.TokTo) {
+			return nil
+		}
+		typ := p.typedecl()
+		if typ == nil {
+			return nil
+		}
+		return &ast.PointerType{
+			Source: curr.Source,
+			Type:   typ,
+		}
+	}
+	p.unexpected(curr)
 	return nil
 }
 
@@ -310,6 +399,6 @@ func (p *parser) terminal() ast.Expression {
 		}
 		return expr
 	}
-	p.err = fmt.Errorf("[%s] unexpected %s", curr.Source.String(), curr.String())
+	p.unexpected(curr)
 	return nil
 }

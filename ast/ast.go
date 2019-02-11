@@ -109,6 +109,29 @@ func (a *Assignment) String() string {
 
 func (a *Assignment) statementNode() {}
 
+// Declaration represents a variable declaration statement.
+type Declaration struct {
+	Source token.SourceInformation
+	Name   string
+	Type   Type
+}
+
+func (d *Declaration) String() string {
+	return fmt.Sprintf(
+		"Declaration[%s, %s]",
+		d.Name,
+		d.Type.String(),
+	)
+}
+
+// SourceInfo retrieves the source information for the 'var' keyword
+// in the delcaration.
+func (d *Declaration) SourceInfo() *token.SourceInformation {
+	return &d.Source
+}
+
+func (d *Declaration) statementNode() {}
+
 // Integer is an integer expression.
 type Integer struct {
 	Source token.SourceInformation
@@ -233,10 +256,28 @@ func (a *ArrayType) SourceInfo() *token.SourceInformation {
 
 func (a *ArrayType) String() string {
 	return fmt.Sprintf(
-		"Array[%s, %d]",
-		a.Type.String(),
+		"Array[%d, %s]",
 		a.Size,
+		a.Type.String(),
 	)
 }
 
 func (a *ArrayType) typeNode() {}
+
+// PointerType represents an occurrence of a pointer type in the program.
+type PointerType struct {
+	Source token.SourceInformation
+	Type   Type
+}
+
+// SourceInfo gets the source information for the 'ptr' keyword part of the
+// occurrence.
+func (p *PointerType) SourceInfo() *token.SourceInformation {
+	return &p.Source
+}
+
+func (p *PointerType) String() string {
+	return fmt.Sprintf("Pointer[%s]", p.Type.String())
+}
+
+func (p *PointerType) typeNode() {}
