@@ -3,29 +3,48 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"io/ioutil"
 	"os"
 
 	"github.com/cmgn/compiler/lexer"
 	"github.com/cmgn/compiler/parser"
 )
 
-func main() {
-	scanner := bufio.NewScanner(os.Stdin)
-	fmt.Print("> ")
-	for scanner.Scan() {
-		tokens, err := lexer.Lex("stdin", scanner.Text())
+func runString(filename, str string) {
+	tokens, err := lexer.Lex(filename, str)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		stmts, err := parser.Parse(tokens)
 		if err != nil {
 			fmt.Println(err)
 		} else {
-			stmts, err := parser.Parse(tokens)
-			if err != nil {
-				fmt.Println(err)
-			} else {
-				for _, stmt := range stmts {
-					fmt.Println(stmt.String())
-				}
+			for _, stmt := range stmts {
+				fmt.Println(stmt.String())
 			}
 		}
-		fmt.Print("> ")
+	}
+}
+
+func mustRead(filename string) string {
+	contents, err := ioutil.ReadFile(filename)
+	if err != nil {
+		fmt.Println(err.Error())
+		os.Exit(1)
+	}
+	return string(contents)
+}
+
+func main() {
+	if len(os.Args) == 1 {
+		scanner := bufio.NewScanner(os.Stdin)
+		for scanner.Scan() {
+			runString("<stdin>", scanner.Text())
+		}
+		return
+	}
+
+	for _, filename := range os.Args[1:] {
+		runString(filename, mustRead(filename))
 	}
 }

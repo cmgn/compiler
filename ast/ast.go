@@ -3,6 +3,7 @@ package ast
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/cmgn/compiler/token"
 )
@@ -131,6 +132,58 @@ func (d *Declaration) SourceInfo() *token.SourceInformation {
 }
 
 func (d *Declaration) statementNode() {}
+
+// IfStatement represents an occurrence of an if statement. Both ifs with &
+// without an else are represented by this, in the latter case Statement2 will
+// be the empty statement.
+type IfStatement struct {
+	Source     token.SourceInformation
+	Condition  Expression
+	Statement1 Statement
+	Statement2 Statement
+}
+
+// SourceInfo gets the source information for the 'if' token part of
+// the if statment.
+func (i *IfStatement) SourceInfo() *token.SourceInformation {
+	return &i.Source
+}
+
+func (i *IfStatement) String() string {
+	return fmt.Sprintf(
+		"If[%s, %s, %s]",
+		i.Condition.String(),
+		i.Statement1.String(),
+		i.Statement2.String(),
+	)
+}
+
+func (i *IfStatement) statementNode() {}
+
+// BlockStatement is a series of statements surrounded by curly brackets.
+type BlockStatement struct {
+	Source     token.SourceInformation
+	Statements []Statement
+}
+
+// SourceInfo gets the source information for the opening bracket
+// of the block.
+func (b *BlockStatement) SourceInfo() *token.SourceInformation {
+	return &b.Source
+}
+
+func (b *BlockStatement) String() string {
+	strs := make([]string, len(b.Statements))
+	for i, statement := range b.Statements {
+		strs[i] = statement.String()
+	}
+	return fmt.Sprintf(
+		"Block[%s]",
+		strings.Join(strs, ", "),
+	)
+}
+
+func (b *BlockStatement) statementNode() {}
 
 // Integer is an integer expression.
 type Integer struct {

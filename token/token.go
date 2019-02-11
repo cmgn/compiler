@@ -8,32 +8,32 @@ type Type int
 
 // Definitions for token types.
 const (
-	TokInteger Type = iota
-	TokIdentifier
-	TokAssign       // '='
-	TokEquals       // '=='
-	TokLessThan     // '<'
-	TokGreaterThan  // '>'
-	TokPlus         // '+'
-	TokDash         // '-'
-	TokStar         // '*'
-	TokFwdSlash     // '/'
-	TokAmpersand    // '&'
-	TokIf           // 'if'
-	TokElse         // 'else'
-	TokWhile        // 'while'
-	TokLeftBracket  // '('
-	TokRightBracket // ')'
-	TokLeftCurly    // '{'
-	TokRightCurly   // '}'
-	TokSemiColon    // ';'
-	TokVar          // 'var'
-	TokInt          // 'int'
-	TokArray        // 'array'
-	TokOf           // 'of'
-	TokPtr          // 'ptr'
-	TokTo           // 'to'
-	TokChar         // 'char'
+	TokInteger      Type = iota // integer
+	TokIdentifier               // identifier
+	TokAssign                   // '='
+	TokEquals                   // '=='
+	TokLessThan                 // '<'
+	TokGreaterThan              // '>'
+	TokPlus                     // '+'
+	TokDash                     // '-'
+	TokStar                     // '*'
+	TokFwdSlash                 // '/'
+	TokAmpersand                // '&'
+	TokIf                       // 'if'
+	TokElse                     // 'else'
+	TokWhile                    // 'while'
+	TokLeftBracket              // '('
+	TokRightBracket             // ')'
+	TokLeftCurly                // '{'
+	TokRightCurly               // '}'
+	TokSemiColon                // ';'
+	TokVar                      // 'var'
+	TokInt                      // 'int'
+	TokArray                    // 'array'
+	TokOf                       // 'of'
+	TokPtr                      // 'ptr'
+	TokTo                       // 'to'
+	TokChar                     // 'char'
 )
 
 // SourceInformation holds the source information for a token.
@@ -57,6 +57,9 @@ type Token struct {
 }
 
 func (t *Token) String() string {
+	if t.Type == TokInteger || t.Type == TokIdentifier {
+		return "'" + t.Value + "'"
+	}
 	return t.Type.String()
 }
 

@@ -49,9 +49,11 @@ func (p *parser) expect(typ token.Type) bool {
 	curr := p.curr()
 	if curr == nil {
 		curr = p.toks[p.pos-1]
-		p.err = fmt.Errorf("[%s] unexpected end of input, expected %s", curr.Source.String(), typ.String())
+		p.err = fmt.Errorf("[%s] unexpected end of input, expected %s",
+			curr.Source.String(), typ.String())
 	} else if curr.Type != typ {
-		p.err = fmt.Errorf("[%s] expected %s, got %s", curr.Source.String(), typ.String(), curr.Type.String())
+		p.err = fmt.Errorf("[%s] expected %s, got %s",
+			curr.Source.String(), typ.String(), curr.String())
 		return false
 	}
 	p.pos++
@@ -111,6 +113,36 @@ func (p *parser) statement() ast.Statement {
 			Name:   name.Value,
 			Type:   typ,
 		}
+	case token.TokIf:
+		p.expect(token.TokIf)
+		cond := p.expression()
+		if cond == nil {
+			return nil
+		}
+		stmt1 := p.statement()
+		if stmt1 == nil {
+			return nil
+		} else if p.empty() || p.curr().Type != token.TokElse {
+			return &ast.IfStatement{
+				Source:     curr.Source,
+				Condition:  cond,
+				Statement1: stmt1,
+				Statement2: &ast.Empty{},
+			}
+		}
+		p.expect(token.TokElse)
+		stmt2 := p.statement()
+		if stmt2 == nil {
+			return nil
+		}
+		return &ast.IfStatement{
+			Source:     curr.Source,
+			Condition:  cond,
+			Statement1: stmt1,
+			Statement2: stmt2,
+		}
+	case token.TokLeftCurly:
+		return p.block()
 	}
 
 	expr := p.expression()
@@ -141,6 +173,28 @@ func (p *parser) statement() ast.Statement {
 		}
 	}
 	return nil
+}
+
+func (p *parser) block() ast.Statement {
+	curr := p.curr()
+	if !p.expect(token.TokLeftCurly) {
+		return nil
+	}
+	statements := make([]ast.Statement, 0)
+	for !p.empty() && p.curr().Type != token.TokRightCurly {
+		stmt := p.statement()
+		if stmt == nil {
+			return nil
+		}
+		statements = append(statements, stmt)
+	}
+	if !p.expect(token.TokRightCurly) {
+		return nil
+	}
+	return &ast.BlockStatement{
+		Source:     curr.Source,
+		Statements: statements,
+	}
 }
 
 // typedecl
