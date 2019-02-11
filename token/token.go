@@ -18,6 +18,7 @@ const (
 	TokDash         // '-'
 	TokStar         // '*'
 	TokFwdSlash     // '/'
+	TokAmpersand    // '&'
 	TokIf           // 'if'
 	TokElse         // 'else'
 	TokWhile        // 'while'
@@ -71,6 +72,7 @@ var ConstantTokens = map[Type]string{
 	TokDash:         "-",
 	TokStar:         "*",
 	TokFwdSlash:     "/",
+	TokAmpersand:    "&",
 	TokIf:           "if",
 	TokElse:         "else",
 	TokWhile:        "while",

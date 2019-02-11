@@ -152,6 +152,16 @@ func (p *parser) typedecl() ast.Type {
 	}
 	curr := p.curr()
 	switch curr.Type {
+	case token.TokLeftBracket:
+		p.expect(token.TokLeftBracket)
+		typ := p.typedecl()
+		if typ == nil {
+			return nil
+		}
+		if !p.expect(token.TokRightBracket) {
+			return nil
+		}
+		return typ
 	case token.TokInt:
 		p.expect(token.TokInt)
 		return &ast.Primitive{
@@ -398,6 +408,36 @@ func (p *parser) terminal() ast.Expression {
 			return nil
 		}
 		return expr
+	case token.TokStar:
+		p.expect(token.TokStar)
+		term := p.terminal()
+		if term == nil {
+			return nil
+		}
+		return &ast.UnaryOperator{
+			Type:  ast.UnaryDereference,
+			Value: term,
+		}
+	case token.TokDash:
+		p.expect(token.TokDash)
+		term := p.terminal()
+		if term == nil {
+			return nil
+		}
+		return &ast.UnaryOperator{
+			Type:  ast.UnaryMinus,
+			Value: term,
+		}
+	case token.TokAmpersand:
+		p.expect(token.TokAmpersand)
+		term := p.terminal()
+		if term == nil {
+			return nil
+		}
+		return &ast.UnaryOperator{
+			Type:  ast.UnaryAddress,
+			Value: term,
+		}
 	}
 	p.unexpected(curr)
 	return nil

@@ -4,6 +4,7 @@ package lexer
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/cmgn/compiler/token"
 )
@@ -141,7 +142,11 @@ loop:
 			}
 			return l.buildConstantToken(token.TokAssign)
 		default:
-			l.error("invalid character: " + string(curr))
+			l.error(fmt.Sprintf(
+				"[%s:%d] unexpected %s",
+				l.fname,
+				l.line,
+				string(curr)))
 			break loop
 		}
 	}
@@ -174,4 +179,5 @@ var byteTokens = map[byte]token.Type{
 	'}': token.TokRightCurly,
 	'<': token.TokLessThan,
 	'>': token.TokGreaterThan,
+	'&': token.TokAmpersand,
 }

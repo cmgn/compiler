@@ -40,7 +40,7 @@ func TestIdentifierLex(t *testing.T) {
 }
 
 func TestSymbolLex(t *testing.T) {
-	in := "+-{}=*/==><;"
+	in := "+-{}=*/==><;&"
 	out := []*token.Token{
 		tok(token.TokPlus, "+"),
 		tok(token.TokDash, "-"),
@@ -53,6 +53,7 @@ func TestSymbolLex(t *testing.T) {
 		tok(token.TokGreaterThan, ">"),
 		tok(token.TokLessThan, "<"),
 		tok(token.TokSemiColon, ";"),
+		tok(token.TokAmpersand, "&"),
 	}
 	runTests(in, out, t)
 }
