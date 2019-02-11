@@ -81,6 +81,7 @@ func (p *parser) next() *token.Token {
 // statement
 // | expression '=' expression ';'
 // | expression ';'
+// | 'var' identifier typedecl ';'
 // | ';'
 func (p *parser) statement() ast.Statement {
 	if p.unexpectedEnd() {
@@ -146,6 +147,7 @@ func (p *parser) statement() ast.Statement {
 // | 'int'
 // | 'char'
 // | 'array' '(' integer ')' 'of' typedecl
+// | "(" typedecl ")"
 func (p *parser) typedecl() ast.Type {
 	if p.unexpectedEnd() {
 		return nil
@@ -378,6 +380,9 @@ loop:
 // | integer
 // | variable
 // | "(" expression ")"
+// | "-" terminal
+// | "*" terminal
+// | "&" terminal
 func (p *parser) terminal() ast.Expression {
 	if p.unexpectedEnd() {
 		return nil
