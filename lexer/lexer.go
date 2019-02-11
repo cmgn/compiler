@@ -164,10 +164,10 @@ func isDigit(b byte) bool {
 // be a multibyte token.
 var byteTokens = map[byte]token.Type{
 	'+': token.TokPlus,
-	'-': token.TokMinus,
-	'*': token.TokTimes,
+	'-': token.TokDash,
+	'*': token.TokStar,
 	';': token.TokSemiColon,
-	'/': token.TokDivide,
+	'/': token.TokFwdSlash,
 	'(': token.TokLeftBracket,
 	')': token.TokRightBracket,
 	'{': token.TokLeftCurly,

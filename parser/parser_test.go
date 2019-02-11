@@ -54,7 +54,7 @@ func TestTerminalBrackets(t *testing.T) {
 func TestProductTimes(t *testing.T) {
 	in := toks(
 		tok(token.TokInteger, "123"),
-		tok(token.TokTimes, "*"),
+		tok(token.TokStar, "*"),
 		tok(token.TokInteger, "456"),
 	)
 
@@ -79,7 +79,7 @@ func TestProductTimes(t *testing.T) {
 func TestProductDivide(t *testing.T) {
 	in := toks(
 		tok(token.TokInteger, "123"),
-		tok(token.TokDivide, "/"),
+		tok(token.TokFwdSlash, "/"),
 		tok(token.TokInteger, "456"),
 	)
 

@@ -15,9 +15,9 @@ const (
 	TokLessThan     // '<'
 	TokGreaterThan  // '>'
 	TokPlus         // '+'
-	TokMinus        // '-'
-	TokTimes        // '*'
-	TokDivide       // '/'
+	TokDash         // '-'
+	TokStar         // '*'
+	TokFwdSlash     // '/'
 	TokIf           // 'if'
 	TokElse         // 'else'
 	TokWhile        // 'while'
@@ -68,9 +68,9 @@ var ConstantTokens = map[Type]string{
 	TokLessThan:     "<",
 	TokGreaterThan:  ">",
 	TokPlus:         "+",
-	TokMinus:        "-",
-	TokTimes:        "*",
-	TokDivide:       "/",
+	TokDash:         "-",
+	TokStar:         "*",
+	TokFwdSlash:     "/",
 	TokIf:           "if",
 	TokElse:         "else",
 	TokWhile:        "while",

@@ -215,8 +215,8 @@ loop:
 				Left:  prod,
 				Right: right,
 			}
-		case token.TokMinus:
-			p.expect(token.TokMinus)
+		case token.TokDash:
+			p.expect(token.TokDash)
 			right := p.product()
 			if right == nil {
 				return nil
@@ -246,8 +246,8 @@ loop:
 	for !p.empty() {
 		curr := p.curr()
 		switch curr.Type {
-		case token.TokTimes:
-			p.expect(token.TokTimes)
+		case token.TokStar:
+			p.expect(token.TokStar)
 			right := p.terminal()
 			if right == nil {
 				return nil
@@ -257,8 +257,8 @@ loop:
 				Left:  term,
 				Right: right,
 			}
-		case token.TokDivide:
-			p.expect(token.TokDivide)
+		case token.TokFwdSlash:
+			p.expect(token.TokFwdSlash)
 			right := p.terminal()
 			if right == nil {
 				return nil
