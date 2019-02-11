@@ -11,19 +11,21 @@ import (
 
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
+	fmt.Print("> ")
 	for scanner.Scan() {
 		tokens, err := lexer.Lex("stdin", scanner.Text())
 		if err != nil {
 			fmt.Println(err)
-			continue
+		} else {
+			stmts, err := parser.Parse(tokens)
+			if err != nil {
+				fmt.Println(err)
+			} else {
+				for _, stmt := range stmts {
+					fmt.Println(stmt.String())
+				}
+			}
 		}
-		stmts, err := parser.Parse(tokens)
-		if err != nil {
-			fmt.Println(err)
-			continue
-		}
-		for _, stmt := range stmts {
-			fmt.Println(stmt.String())
-		}
+		fmt.Print("> ")
 	}
 }

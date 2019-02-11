@@ -27,6 +27,12 @@ const (
 	TokRightCurly   // '}'
 	TokSemiColon    // ';'
 	TokVar          // 'var'
+	TokInt          // 'int'
+	TokArray        // 'array'
+	TokOf           // 'of'
+	TokPtr          // 'ptr'
+	TokTo           // 'to'
+	TokChar         // 'char'
 )
 
 // SourceInformation holds the source information for a token.
@@ -68,12 +74,18 @@ var ConstantTokens = map[Type]string{
 	TokIf:           "if",
 	TokElse:         "else",
 	TokWhile:        "while",
-	TokVar:          "var",
 	TokLeftBracket:  "(",
 	TokRightBracket: ")",
 	TokLeftCurly:    "{",
 	TokRightCurly:   "}",
 	TokSemiColon:    ";",
+	TokVar:          "var",
+	TokInt:          "int",
+	TokArray:        "array",
+	TokOf:           "of",
+	TokPtr:          "ptr",
+	TokTo:           "to",
+	TokChar:         "char",
 }
 
 // Keywords contains identifiers that are language-level keywords.
@@ -82,4 +94,10 @@ var Keywords = map[string]Type{
 	"while": TokWhile,
 	"else":  TokElse,
 	"var":   TokVar,
+	"int":   TokInt,
+	"array": TokArray,
+	"of":    TokOf,
+	"ptr":   TokPtr,
+	"to":    TokTo,
+	"char":  TokChar,
 }
