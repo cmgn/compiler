@@ -34,6 +34,8 @@ const (
 	TokPtr                      // 'ptr'
 	TokTo                       // 'to'
 	TokChar                     // 'char'
+	TokNotEqual                 // '!='
+	TokNot                      // '!'
 )
 
 // SourceInformation holds the source information for a token.
@@ -91,6 +93,8 @@ var ConstantTokens = map[Type]string{
 	TokPtr:          "ptr",
 	TokTo:           "to",
 	TokChar:         "char",
+	TokNotEqual:     "!=",
+	TokNot:          "!",
 }
 
 // Keywords contains identifiers that are language-level keywords.

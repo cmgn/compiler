@@ -4,9 +4,9 @@ package token
 
 import "strconv"
 
-const _Type_name = "integeridentifier'=''==''<''>''+''-''*''/''&''if''else''while''('')''{''}'';''var''int''array''of''ptr''to''char'"
+const _Type_name = "integeridentifier'=''==''<''>''+''-''*''/''&''if''else''while''('')''{''}'';''var''int''array''of''ptr''to''char''!=''!'"
 
-var _Type_index = [...]uint8{0, 7, 17, 20, 24, 27, 30, 33, 36, 39, 42, 45, 49, 55, 62, 65, 68, 71, 74, 77, 82, 87, 94, 98, 103, 107, 113}
+var _Type_index = [...]uint8{0, 7, 17, 20, 24, 27, 30, 33, 36, 39, 42, 45, 49, 55, 62, 65, 68, 71, 74, 77, 82, 87, 94, 98, 103, 107, 113, 117, 120}
 
 func (i Type) String() string {
 	if i < 0 || i >= Type(len(_Type_index)-1) {

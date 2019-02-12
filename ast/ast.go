@@ -31,7 +31,8 @@ const (
 	BinaryDiv                                   // '/'
 	BinaryLessThan                              // '<'
 	BinaryGreaterThan                           // '>'
-	BinaryEquals                                // '='
+	BinaryEqual                                 // '=='
+	BinaryNotEqual                              // '!='
 )
 
 // Node is the interface implemented by all syntax tree nodes.
@@ -159,6 +160,29 @@ func (i *IfStatement) String() string {
 }
 
 func (i *IfStatement) statementNode() {}
+
+// WhileStatement is a 'while' statement.
+type WhileStatement struct {
+	Source    token.SourceInformation
+	Condition Expression
+	Statement Statement
+}
+
+// SourceInfo gets the source information for the 'while' keyword part
+// of the while statement.
+func (w *WhileStatement) SourceInfo() *token.SourceInformation {
+	return &w.Source
+}
+
+func (w *WhileStatement) String() string {
+	return fmt.Sprintf(
+		"While[%s, %s]",
+		w.Condition.String(),
+		w.Statement.String(),
+	)
+}
+
+func (w *WhileStatement) statementNode() {}
 
 // BlockStatement is a series of statements surrounded by curly brackets.
 type BlockStatement struct {

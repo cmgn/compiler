@@ -141,6 +141,13 @@ loop:
 				return l.buildConstantToken(token.TokEquals)
 			}
 			return l.buildConstantToken(token.TokAssign)
+		case '!':
+			l.pos++
+			if l.curr() == '=' {
+				l.pos++
+				return l.buildConstantToken(token.TokNotEqual)
+			}
+			return l.buildConstantToken(token.TokNot)
 		default:
 			l.error(fmt.Sprintf(
 				"[%s:%d] unexpected %s",

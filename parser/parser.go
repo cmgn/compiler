@@ -84,6 +84,8 @@ func (p *parser) next() *token.Token {
 // | expression '=' expression ';'
 // | expression ';'
 // | 'var' identifier typedecl ';'
+// | 'if' expression statement ['else' statement]
+// | block
 // | ';'
 func (p *parser) statement() ast.Statement {
 	if p.unexpectedEnd() {
@@ -141,6 +143,21 @@ func (p *parser) statement() ast.Statement {
 			Statement1: stmt1,
 			Statement2: stmt2,
 		}
+	case token.TokWhile:
+		p.expect(token.TokWhile)
+		cond := p.expression()
+		if cond == nil {
+			return nil
+		}
+		stmt := p.statement()
+		if stmt == nil {
+			return nil
+		}
+		return &ast.WhileStatement{
+			Source:    curr.Source,
+			Condition: cond,
+			Statement: stmt,
+		}
 	case token.TokLeftCurly:
 		return p.block()
 	}
@@ -175,6 +192,8 @@ func (p *parser) statement() ast.Statement {
 	return nil
 }
 
+// block
+// | '{' {statement} '}'
 func (p *parser) block() ast.Statement {
 	curr := p.curr()
 	if !p.expect(token.TokLeftCurly) {
@@ -281,27 +300,42 @@ func (p *parser) expression() ast.Expression {
 }
 
 // equality
-// | comparison '=' comparison
+// | comparison '==' comparison
+// | comparison '!=' comparison
 // | comparison
 func (p *parser) equality() ast.Expression {
 	left := p.comparison()
 	if left == nil {
 		return nil
 	}
+loop:
 	for !p.empty() {
 		curr := p.curr()
-		if curr.Type != token.TokEquals {
-			break
-		}
-		p.expect(token.TokEquals)
-		right := p.comparison()
-		if right == nil {
-			return nil
-		}
-		left = &ast.BinaryOperator{
-			Type:  ast.BinaryEquals,
-			Left:  left,
-			Right: right,
+		switch curr.Type {
+		case token.TokEquals:
+			p.expect(token.TokEquals)
+			right := p.comparison()
+			if right == nil {
+				return nil
+			}
+			left = &ast.BinaryOperator{
+				Type:  ast.BinaryEqual,
+				Left:  left,
+				Right: right,
+			}
+		case token.TokNotEqual:
+			p.expect(token.TokNotEqual)
+			right := p.comparison()
+			if right == nil {
+				return nil
+			}
+			left = &ast.BinaryOperator{
+				Type:  ast.BinaryNotEqual,
+				Left:  left,
+				Right: right,
+			}
+		default:
+			break loop
 		}
 	}
 	return left

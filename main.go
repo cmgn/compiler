@@ -14,15 +14,15 @@ func runString(filename, str string) {
 	tokens, err := lexer.Lex(filename, str)
 	if err != nil {
 		fmt.Println(err)
-	} else {
-		stmts, err := parser.Parse(tokens)
-		if err != nil {
-			fmt.Println(err)
-		} else {
-			for _, stmt := range stmts {
-				fmt.Println(stmt.String())
-			}
-		}
+		return
+	}
+	stmts, err := parser.Parse(tokens)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	for _, stmt := range stmts {
+		fmt.Println(stmt.String())
 	}
 }
 
