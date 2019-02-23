@@ -220,7 +220,7 @@ func (p *parser) block() ast.Statement {
 // | 'int'
 // | 'char'
 // | 'array' '(' integer ')' 'of' typedecl
-// | "(" typedecl ")"
+// | '(' typedecl ')'
 func (p *parser) typedecl() ast.Type {
 	if p.unexpectedEnd() {
 		return nil
@@ -268,11 +268,14 @@ func (p *parser) typedecl() ast.Type {
 		if typ == nil {
 			return nil
 		}
-		// TOOD: handle this error, not sure what the message should say yet.
-		sizeInt, _ := strconv.Atoi(size.Value)
+		sizeInt, err := strconv.Atoi(size.Value)
+		if err != nil {
+			p.err = fmt.Errorf("[%s] invalid static array size '%s'",
+				size.Source.String(), size.Value)
+		}
 		return &ast.ArrayType{
 			Type:   typ,
-			Size:   sizeInt,
+			Length: sizeInt,
 			Source: curr.Source,
 		}
 	case token.TokPtr:
@@ -342,8 +345,8 @@ loop:
 }
 
 // comparison
-// | summation ">" summation
-// | summation "<" summation
+// | summation '>' summation
+// | summation '<' summation
 // | summation
 func (p *parser) comparison() ast.Expression {
 	left := p.summation()
@@ -467,10 +470,10 @@ loop:
 // terminal
 // | integer
 // | variable
-// | "(" expression ")"
-// | "-" terminal
-// | "*" terminal
-// | "&" terminal
+// | '(' expression ')'
+// | '-' terminal
+// | '*' terminal
+// | '&' terminal
 func (p *parser) terminal() ast.Expression {
 	if p.unexpectedEnd() {
 		return nil

@@ -1,6 +1,12 @@
 // Package token provides the definitions for token types.
 package token
 
+// To add a new token you should first make a type for it. The
+// comment on the right of the type is what it will be displayed as
+// in errors. If the token is a constant token (i.e. it will always have
+// the same string value) then add it to the ConstantTokens map. If it is
+// a keyword then add it to the keywords map.
+
 import "strconv"
 
 // Type represents the type of a token.

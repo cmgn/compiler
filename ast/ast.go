@@ -57,6 +57,8 @@ type Expression interface {
 type Type interface {
 	Node
 	typeNode()
+	// Size gets the number of bytes occupied by a type on the stack.
+	Size() int
 }
 
 // Empty represents an empty statement. The empty statement is used in2
@@ -291,6 +293,16 @@ func (u *UnaryOperator) String() string {
 
 func (u *UnaryOperator) expressionNode() {}
 
+// PrimitiveType is used in the Primitive node to represent which primitive
+// type is contained in it.
+type PrimitiveType int
+
+// Primitive type definitions.
+const (
+	IntType  PrimitiveType = iota // 'int'
+	CharType                      // 'char'
+)
+
 // Primitive is the type for primitive machine types such as integers
 // and characters.
 type Primitive struct {
@@ -307,22 +319,23 @@ func (p *Primitive) String() string {
 	return p.Type.String()
 }
 
+// Size gets the size of the contained primitive type.
+func (p *Primitive) Size() int {
+	switch p.Type {
+	case IntType:
+		return 8
+	case CharType:
+		return 1
+	}
+	return 0
+}
+
 func (p *Primitive) typeNode() {}
-
-// PrimitiveType is used in the Primitive node to represent which primitive
-// type is contained in it.
-type PrimitiveType int
-
-// Primitive type definitions.
-const (
-	IntType  PrimitiveType = iota // 'int'
-	CharType                      // 'char'
-)
 
 // ArrayType is the type for fixed-length statically allocated arrays.
 type ArrayType struct {
 	Source token.SourceInformation
-	Size   int
+	Length int
 	Type   Type
 }
 
@@ -334,9 +347,15 @@ func (a *ArrayType) SourceInfo() *token.SourceInformation {
 func (a *ArrayType) String() string {
 	return fmt.Sprintf(
 		"Array[%d, %s]",
-		a.Size,
+		a.Length,
 		a.Type.String(),
 	)
+}
+
+// Size gets the size of the array in bytes, which is the length times the size of
+// the the array's type.
+func (a *ArrayType) Size() int {
+	return a.Type.Size() * a.Length
 }
 
 func (a *ArrayType) typeNode() {}
@@ -355,6 +374,11 @@ func (p *PointerType) SourceInfo() *token.SourceInformation {
 
 func (p *PointerType) String() string {
 	return fmt.Sprintf("Pointer[%s]", p.Type.String())
+}
+
+// Size gets the size of a pointer in bytes, which is always eight bytes.
+func (p *PointerType) Size() int {
+	return 8
 }
 
 func (p *PointerType) typeNode() {}
