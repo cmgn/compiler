@@ -4,9 +4,45 @@ package token
 
 import "strconv"
 
-const _Type_name = "integeridentifier'=''==''<''>''+''-''*''/''&''if''else''while''('')''{''}'';''var''int''array''of''ptr''to''char''!=''!'"
+func _() {
+	// An "invalid array index" compiler error signifies that the constant values have changed.
+	// Re-run the stringer command to generate them again.
+	var x [1]struct{}
+	_ = x[TokInteger-0]
+	_ = x[TokIdentifier-1]
+	_ = x[TokAssign-2]
+	_ = x[TokEquals-3]
+	_ = x[TokLessThan-4]
+	_ = x[TokGreaterThan-5]
+	_ = x[TokPlus-6]
+	_ = x[TokDash-7]
+	_ = x[TokStar-8]
+	_ = x[TokFwdSlash-9]
+	_ = x[TokAmpersand-10]
+	_ = x[TokIf-11]
+	_ = x[TokElse-12]
+	_ = x[TokWhile-13]
+	_ = x[TokLeftBracket-14]
+	_ = x[TokRightBracket-15]
+	_ = x[TokLeftCurly-16]
+	_ = x[TokRightCurly-17]
+	_ = x[TokLeftSquare-18]
+	_ = x[TokRightSquare-19]
+	_ = x[TokSemiColon-20]
+	_ = x[TokVar-21]
+	_ = x[TokInt-22]
+	_ = x[TokArray-23]
+	_ = x[TokOf-24]
+	_ = x[TokPtr-25]
+	_ = x[TokTo-26]
+	_ = x[TokChar-27]
+	_ = x[TokNotEqual-28]
+	_ = x[TokNot-29]
+}
 
-var _Type_index = [...]uint8{0, 7, 17, 20, 24, 27, 30, 33, 36, 39, 42, 45, 49, 55, 62, 65, 68, 71, 74, 77, 82, 87, 94, 98, 103, 107, 113, 117, 120}
+const _Type_name = "integeridentifier'=''==''<''>''+''-''*''/''&''if''else''while''('')''{''}'']'']'';''var''int''array''of''ptr''to''char''!=''!'"
+
+var _Type_index = [...]uint8{0, 7, 17, 20, 24, 27, 30, 33, 36, 39, 42, 45, 49, 55, 62, 65, 68, 71, 74, 77, 80, 83, 88, 93, 100, 104, 109, 113, 119, 123, 126}
 
 func (i Type) String() string {
 	if i < 0 || i >= Type(len(_Type_index)-1) {
