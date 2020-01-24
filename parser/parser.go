@@ -426,11 +426,11 @@ loop:
 }
 
 // product
-// | product '*' terminal
-// | product '/' terminal
-// | terminal
+// | product '*' subscript
+// | product '/' subscript
+// | subscript
 func (p *parser) product() ast.Expression {
-	term := p.terminal()
+	term := p.subscript()
 	if term == nil {
 		return nil
 	}
@@ -440,7 +440,7 @@ loop:
 		switch curr.Type {
 		case token.TokStar:
 			p.expect(token.TokStar)
-			right := p.terminal()
+			right := p.subscript()
 			if right == nil {
 				return nil
 			}
@@ -451,7 +451,7 @@ loop:
 			}
 		case token.TokFwdSlash:
 			p.expect(token.TokFwdSlash)
-			right := p.terminal()
+			right := p.subscript()
 			if right == nil {
 				return nil
 			}
@@ -463,6 +463,22 @@ loop:
 		default:
 			break loop
 		}
+	}
+	return term
+}
+
+// subscript
+// | subscript '[' expression ']'
+// | terminal
+func (p *parser) subscript() ast.Expression {
+	term := p.terminal()
+	for !p.empty() && p.curr().Type == token.TokLeftSquare {
+		p.expect(token.TokLeftSquare)
+		index := p.expression()
+		if !p.expect(token.TokRightSquare) {
+			return nil
+		}
+		term = &ast.Subscript{Value: term, Index: index}
 	}
 	return term
 }

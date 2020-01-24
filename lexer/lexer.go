@@ -184,6 +184,8 @@ var byteTokens = map[byte]token.Type{
 	')': token.TokRightBracket,
 	'{': token.TokLeftCurly,
 	'}': token.TokRightCurly,
+	'[': token.TokLeftSquare,
+	']': token.TokRightSquare,
 	'<': token.TokLessThan,
 	'>': token.TokGreaterThan,
 	'&': token.TokAmpersand,

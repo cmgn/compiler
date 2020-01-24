@@ -293,6 +293,23 @@ func (u *UnaryOperator) String() string {
 
 func (u *UnaryOperator) expressionNode() {}
 
+// Subscript represents an array subscript expression.
+type Subscript struct {
+	Value Expression
+	Index Expression
+}
+
+// SourceInfo gets the source information for the value being indexed.
+func (s *Subscript) SourceInfo() *token.SourceInformation {
+	return s.Value.SourceInfo()
+}
+
+func (s *Subscript) String() string {
+	return fmt.Sprintf("Subscript[%s, %s]", s.Value.String(), s.Index.String())
+}
+
+func (s *Subscript) expressionNode() {}
+
 // PrimitiveType is used in the Primitive node to represent which primitive
 // type is contained in it.
 type PrimitiveType int

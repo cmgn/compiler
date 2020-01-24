@@ -4,6 +4,20 @@ package ast
 
 import "strconv"
 
+func _() {
+	// An "invalid array index" compiler error signifies that the constant values have changed.
+	// Re-run the stringer command to generate them again.
+	var x [1]struct{}
+	_ = x[BinaryAdd-0]
+	_ = x[BinarySub-1]
+	_ = x[BinaryMul-2]
+	_ = x[BinaryDiv-3]
+	_ = x[BinaryLessThan-4]
+	_ = x[BinaryGreaterThan-5]
+	_ = x[BinaryEqual-6]
+	_ = x[BinaryNotEqual-7]
+}
+
 const _BinaryOperatorType_name = "'+''-''*''/''<''>''==''!='"
 
 var _BinaryOperatorType_index = [...]uint8{0, 3, 6, 9, 12, 15, 18, 22, 26}
@@ -13,6 +27,13 @@ func (i BinaryOperatorType) String() string {
 		return "BinaryOperatorType(" + strconv.FormatInt(int64(i), 10) + ")"
 	}
 	return _BinaryOperatorType_name[_BinaryOperatorType_index[i]:_BinaryOperatorType_index[i+1]]
+}
+func _() {
+	// An "invalid array index" compiler error signifies that the constant values have changed.
+	// Re-run the stringer command to generate them again.
+	var x [1]struct{}
+	_ = x[IntType-0]
+	_ = x[CharType-1]
 }
 
 const _PrimitiveType_name = "'int''char'"
@@ -24,6 +45,14 @@ func (i PrimitiveType) String() string {
 		return "PrimitiveType(" + strconv.FormatInt(int64(i), 10) + ")"
 	}
 	return _PrimitiveType_name[_PrimitiveType_index[i]:_PrimitiveType_index[i+1]]
+}
+func _() {
+	// An "invalid array index" compiler error signifies that the constant values have changed.
+	// Re-run the stringer command to generate them again.
+	var x [1]struct{}
+	_ = x[UnaryDereference-0]
+	_ = x[UnaryMinus-1]
+	_ = x[UnaryAddress-2]
 }
 
 const _UnaryOperatorType_name = "'*''-''&'"

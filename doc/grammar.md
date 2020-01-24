@@ -34,8 +34,12 @@
       | product
 
     product
-      | product "*" terminal
-      | product "/" terminal
+      | product "*" subscript
+      | product "/" subscript
+      | subscript
+
+    subscript
+      | subscript "[" expression "]"
       | terminal
 
     terminal

@@ -121,6 +121,24 @@ func TestAssignmentStatement(t *testing.T) {
 	}
 }
 
+func TestSubscript(t *testing.T) {
+	in := toks(
+		tok(token.TokIdentifier, "abc"),
+		tok(token.TokLeftSquare, "["),
+		tok(token.TokInteger, "123"),
+		tok(token.TokRightSquare, "]"),
+	)
+	parser := makeParser(in)
+	subscript := parser.subscript()
+	if _, ok := subscript.(*ast.Subscript); !ok {
+		t.Error(
+			"For", "abc[123]",
+			"expected", "subscript",
+			"got", subscript,
+		)
+	}
+}
+
 func tok(typ token.Type, val string) *token.Token {
 	return &token.Token{Type: typ, Value: val}
 }

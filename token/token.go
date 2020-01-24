@@ -32,6 +32,8 @@ const (
 	TokRightBracket             // ')'
 	TokLeftCurly                // '{'
 	TokRightCurly               // '}'
+	TokLeftSquare               // ']'
+	TokRightSquare              // ']'
 	TokSemiColon                // ';'
 	TokVar                      // 'var'
 	TokInt                      // 'int'
@@ -91,6 +93,8 @@ var ConstantTokens = map[Type]string{
 	TokRightBracket: ")",
 	TokLeftCurly:    "{",
 	TokRightCurly:   "}",
+	TokLeftSquare:   "[",
+	TokRightSquare:  "]",
 	TokSemiColon:    ";",
 	TokVar:          "var",
 	TokInt:          "int",

@@ -40,12 +40,14 @@ func TestIdentifierLex(t *testing.T) {
 }
 
 func TestSymbolLex(t *testing.T) {
-	in := "+-{}=*/==><;&!!="
+	in := "+-{}[]=*/==><;&!!="
 	out := []*token.Token{
 		tok(token.TokPlus, "+"),
 		tok(token.TokDash, "-"),
 		tok(token.TokLeftCurly, "{"),
 		tok(token.TokRightCurly, "}"),
+		tok(token.TokLeftSquare, "["),
+		tok(token.TokRightSquare, "]"),
 		tok(token.TokAssign, "="),
 		tok(token.TokStar, "*"),
 		tok(token.TokFwdSlash, "/"),
@@ -61,7 +63,7 @@ func TestSymbolLex(t *testing.T) {
 }
 
 func TestComplexExpression(t *testing.T) {
-	in := "1 + ((2 * abc) - (def / 743))"
+	in := "1 + ((2 * abc) - (def + abc[123] / 743))"
 	out := []*token.Token{
 		tok(token.TokInteger, "1"),
 		tok(token.TokPlus, "+"),
@@ -74,6 +76,11 @@ func TestComplexExpression(t *testing.T) {
 		tok(token.TokDash, "-"),
 		tok(token.TokLeftBracket, "("),
 		tok(token.TokIdentifier, "def"),
+		tok(token.TokPlus, "+"),
+		tok(token.TokIdentifier, "abc"),
+		tok(token.TokLeftSquare, "["),
+		tok(token.TokInteger, "123"),
+		tok(token.TokRightSquare, "]"),
 		tok(token.TokFwdSlash, "/"),
 		tok(token.TokInteger, "743"),
 		tok(token.TokRightBracket, ")"),
