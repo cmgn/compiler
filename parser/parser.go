@@ -88,6 +88,7 @@ func (p *parser) next() *token.Token {
 // | expression ';'
 // | 'var' identifier typedecl ';'
 // | 'if' expression statement ['else' statement]
+// | 'while' expression statement
 // | block
 // | ';'
 func (p *parser) statement() ast.Statement {
