@@ -51,7 +51,9 @@ func (p *parser) expect(typ token.Type) bool {
 		curr = p.toks[p.pos-1]
 		p.err = fmt.Errorf("[%s] unexpected end of input, expected %s",
 			curr.Source.String(), typ.String())
-	} else if curr.Type != typ {
+		return false
+	}
+	if curr.Type != typ {
 		p.err = fmt.Errorf("[%s] expected %s, got %s",
 			curr.Source.String(), typ.String(), curr.String())
 		return false
