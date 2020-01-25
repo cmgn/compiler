@@ -49,8 +49,8 @@ func (p *parser) expect(typ token.Type) bool {
 	curr := p.curr()
 	if curr == nil {
 		curr = p.toks[p.pos-1]
-		p.err = fmt.Errorf("[%s] unexpected end of input, expected %s",
-			curr.Source.String(), typ.String())
+		p.err = fmt.Errorf("[%s] unexpected end of input after %s, expected %s",
+			curr.Source.String(), curr.String(), typ.String())
 		return false
 	}
 	if curr.Type != typ {
@@ -68,7 +68,8 @@ func (p *parser) unexpected(curr *token.Token) {
 
 func (p *parser) unexpectedEnd() bool {
 	if p.empty() {
-		p.err = fmt.Errorf("[%s] unexpected end of input", p.toks[p.pos-1].Source.String())
+		prev := p.toks[p.pos-1]
+		p.err = fmt.Errorf("[%s] unexpected end of input after %s", prev.Source.String(), prev.String())
 		return true
 	}
 	return false
@@ -126,7 +127,8 @@ func (p *parser) statement() ast.Statement {
 		stmt1 := p.statement()
 		if stmt1 == nil {
 			return nil
-		} else if p.empty() || p.curr().Type != token.TokElse {
+		}
+		if p.empty() || p.curr().Type != token.TokElse {
 			return &ast.IfStatement{
 				Source:     curr.Source,
 				Condition:  cond,
@@ -165,9 +167,7 @@ func (p *parser) statement() ast.Statement {
 	}
 
 	expr := p.expression()
-	if expr == nil {
-		return nil
-	} else if p.unexpectedEnd() {
+	if expr == nil || p.unexpectedEnd() {
 		return nil
 	}
 
@@ -186,7 +186,8 @@ func (p *parser) statement() ast.Statement {
 			Right:  right,
 			Source: middle.Source,
 		}
-	} else if p.expect(token.TokSemiColon) {
+	}
+	if p.expect(token.TokSemiColon) {
 		return &ast.ExpressionStatement{
 			Expression: expr,
 		}
